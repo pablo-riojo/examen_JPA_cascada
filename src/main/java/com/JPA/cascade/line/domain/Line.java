@@ -1,12 +1,13 @@
 package com.JPA.cascade.line.domain;
 
+import com.JPA.cascade.bill.domain.Bill;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter @Setter
 @RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "line")
 public class Line {
@@ -14,9 +15,8 @@ public class Line {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "bill",
-            nullable = false)
-    private Integer billId;
+    @ManyToOne
+    private Bill bill;
 
     @Column(name = "product_name",
             nullable = false)
@@ -26,6 +26,6 @@ public class Line {
             nullable = false)
     private Double productPrice;
 
-    @Column(name = "bill_amount")
-    private Double billAmount;
+    @Column(name = "product_amount", nullable = false)
+    private int productAmount = 1;
 }

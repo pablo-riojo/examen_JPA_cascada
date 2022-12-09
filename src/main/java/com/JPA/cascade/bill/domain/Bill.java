@@ -3,22 +3,22 @@ package com.JPA.cascade.bill.domain;
 import com.JPA.cascade.client.domain.Client;
 import com.JPA.cascade.line.domain.Line;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter @Setter
 @RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "bill")
 public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
 
-    @Column(name = "amount", nullable = false)
+    @Column(name = "amount")
     private double amount;
 
     @OneToOne(cascade = CascadeType.ALL)
