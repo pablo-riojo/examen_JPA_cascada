@@ -1,13 +1,14 @@
 package com.JPA.cascade.bill.infrastructure.dto;
 
-import com.JPA.cascade.client.domain.Client;
-import com.JPA.cascade.line.domain.Line;
+import com.JPA.cascade.client.infrastructure.dto.ClientOutputDTO;
+import com.JPA.cascade.line.infrastructure.dto.LineOutputDTO;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 public class BillInputDTO {
-    private Client client;
-    private List<Line> lines;
+    private double amount;
+    private ClientOutputDTO client;
+    private List<LineOutputDTO> lines;
 }

@@ -1,6 +1,7 @@
 package com.JPA.cascade.bill.domain;
 
 import com.JPA.cascade.client.domain.Client;
+import com.JPA.cascade.header.domain.Header;
 import com.JPA.cascade.line.domain.Line;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,9 +23,11 @@ public class Bill {
     private double amount;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "client_id",
-                nullable = false,
-                unique = true)
+    @JoinColumn(name = "header_id")
+    private Header header;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "client_id")
     private Client client;
 
     @OneToMany(cascade = CascadeType.ALL)

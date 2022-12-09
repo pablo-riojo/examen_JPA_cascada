@@ -3,11 +3,18 @@ package com.JPA.cascade.bill.application;
 import com.JPA.cascade.bill.domain.Bill;
 import com.JPA.cascade.bill.infrastructure.repository.BillRepository;
 import com.JPA.cascade.client.domain.Client;
+import com.JPA.cascade.header.domain.Header;
 import com.JPA.cascade.line.domain.Line;
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityNotFoundException;
+import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +28,6 @@ public class BillSvcImpl implements BillSvc {
         Client initClient = Client.builder()
                 .name("Pablo")
                 .build();
-
         List<Line> initLines = new ArrayList<>();
         Line line1 = Line.builder()
                         .productName("Macbook Air M1")
@@ -47,6 +53,13 @@ public class BillSvcImpl implements BillSvc {
         Bill bill = repository.save(initBill);
         initBill.getLine().forEach(line -> line.setBill(bill));
 
+        Header initHeader = Header.builder()
+                        .client(bill.getClient())
+                        .bill(bill)
+                        .billAmount(billAmount)
+                        .build();
+        initBill.setHeader(initHeader);
+
         repository.save(initBill);
     }
 
@@ -56,25 +69,13 @@ public class BillSvcImpl implements BillSvc {
     }
 
     @Override
-    public Bill findById(int id) {
-        return repository.findById(id).orElseThrow(
-                () -> new RuntimeException("Bill with ID " + id + " not found")
-        );
-    }
-
-    @Override
-    public Line addLine(Line line, int id) {
+    public List<Line> addLine(List<Line> line, int id) {
         return null;
     }
 
     @Override
-    public Bill save(Bill bill) {
-        return repository.save(bill);
-    }
-
-    @Override
     public void delete(int id) {
-        Bill bill = repository.findById(id).orElseThrow(() -> new RuntimeException("Bill with ID " + id + " not found"));
+        Bill bill = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bill with ID " + id + " not found"));
 
         repository.delete(bill);
     }
