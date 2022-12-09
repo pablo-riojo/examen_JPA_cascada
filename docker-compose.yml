@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+  cascadeApp:
+    image: exam-cascade-app
+    container_name: cascade-app
+    ports:
+      - "8080:8080"
