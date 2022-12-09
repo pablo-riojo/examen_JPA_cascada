@@ -6,15 +6,11 @@ import com.JPA.cascade.client.domain.Client;
 import com.JPA.cascade.header.domain.Header;
 import com.JPA.cascade.line.domain.Line;
 import jakarta.annotation.PostConstruct;
-import jakarta.persistence.EntityNotFoundException;
-import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,7 +66,16 @@ public class BillSvcImpl implements BillSvc {
 
     @Override
     public List<Line> addLine(List<Line> line, int id) {
-        return null;
+        Bill bill = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bill with ID " + id + " not found"));
+
+        line.forEach(bill.getLine()::add);
+        line.forEach(b -> bill.setAmount(
+                bill.getAmount() + (b.getProductPrice() * b.getProductAmount())
+        ));
+
+        repository.save(bill);
+
+        return bill.getLine();
     }
 
     @Override
